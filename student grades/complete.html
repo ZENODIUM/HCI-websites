@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .grade-calculator-box {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Increased shadow effect */
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .grade-calculator {
+            background-color: orange;
+            color: white; /* Text color set to white */
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Shadow for header box */
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .form-label {
+            color: orange;
+            font-weight: bold;
+        }
+        .table th {
+            background-color: orange; /* Table header background color */
+            color: white; /* Table header text color */
+        }
+        .btn-download {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="grade-calculator-box">
+            <div class="grade-calculator">
+                <h1>Grade Calculator</h1>
+            </div>
+            <form id="gradeForm">
+                <div class="form-group">
+                    <label for="student_name" class="form-label">Student Name:</label>
+                    <input type="text" class="form-control" id="student_name" name="student_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="roll_number" class="form-label">Roll Number:</label>
+                    <input type="text" class="form-control" id="roll_number" name="roll_number" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject Marks:</label>
+                    <div id="subjectMarks">
+                        <!-- Five subject fields -->
+                        <input type="number" class="form-control mb-2 subject-input" placeholder="Enter marks for subject 1" name="subject1" required>
+                        <input type="number" class="form-control mb-2 subject-input" placeholder="Enter marks for subject 2" name="subject2" required>
+                        <input type="number" class="form-control mb-2 subject-input" placeholder="Enter marks for subject 3" name="subject3" required>
+                        <input type="number" class="form-control mb-2 subject-input" placeholder="Enter marks for subject 4" name="subject4" required>
+                        <input type="number" class="form-control mb-2 subject-input" placeholder="Enter marks for subject 5" name="subject5" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="button" onclick="addAnotherStudent()" class="btn btn-primary ml-3">Add Another Student</button>
+            </form>
+        </div>
+        <div id="resultContainer" style="display: none;">
+            <h2>Results</h2>
+            <div id="results"></div>
+            <button onclick="downloadData()" class="btn-download mt-3">Download</button>
+        </div>
+    </div>
+
+    <script>
+        function calculateGrade(mark) {
+            if (mark >= 90) return 'O';
+            else if (mark >= 80) return 'A+';
+            else if (mark >= 70) return 'A';
+            else if (mark >= 60) return 'B+';
+            else if (mark >= 50) return 'B';
+            else return 'C';
+        }
+
+        function addAnotherStudent() {
+            document.getElementById('gradeForm').reset();
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function downloadData() {
+            const results = document.getElementById('results').innerHTML;
+            const blob = new Blob([results], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'grade_results.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('gradeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            const marks = [];
+            for (let i = 1; i <= 5; i++) {
+                marks.push(parseInt(formData.get(`subject${i}`)));
+            }
+
+            const grades = marks.map(calculateGrade);
+            const averageGrade = calculateGrade(marks.reduce((a, b) => a + b, 0) / marks.length);
+
+            const studentName = formData.get('student_name');
+            const rollNumber = formData.get('roll_number');
+
+            const resultHTML = `
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">${studentName} - ${rollNumber}</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Marks</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${marks.map((mark, index) => `
+                                    <tr>
+                                        <td>Subject ${index + 1}</td>
+                                        <td>${mark}</td>
+                                        <td>${grades[index]}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <p><strong>Overall Grade:</strong> ${averageGrade}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('results').insertAdjacentHTML('beforeend', resultHTML);
+            document.getElementById('resultContainer').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
