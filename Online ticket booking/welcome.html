@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- Google Fonts - Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      background: url('background.jpeg') no-repeat center center fixed; /* Background image */
+      background-size: cover;
+      font-family: 'Poppins', sans-serif; /* Poppins font from Google Fonts */
+      margin: 0;
+      height: 100vh; /* Full height of the viewport */
+      display: flex;
+      align-items: center; /* Center items vertically */
+      justify-content: center; /* Center items horizontally */
+    }
+
+    .welcome-container {
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.8); /* White background for welcome box with opacity */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Shadow effect */
+      text-align: center;
+    }
+
+    .welcome-message {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FFA500; /* Orange text color */
+    }
+
+    .credentials {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Container -->
+  <div class="welcome-container">
+    <div class="welcome-message">Welcome to Online Ticket Booking!</div>
+    <div class="credentials">
+      <p>Your username is: <strong id="username"></strong></p>
+      <p>Your password is: <strong id="password"></strong></p>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Custom JavaScript for setting username and password -->
+  <script>
+    // Get the username and password from the URL query parameters
+    var params = new URLSearchParams(window.location.search);
+    var username = params.get('username');
+    var password = params.get('password');
+
+    // Set the username and password in the welcome page
+    document.getElementById('username').innerText = username;
+    document.getElementById('password').innerText = password;
+  </script>
+
+</body>
+</html>
